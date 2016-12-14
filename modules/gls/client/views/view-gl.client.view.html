@@ -30,8 +30,9 @@
               <table class="table gl-table">
                 <thead>
                   <tr>
-                    <th>No,</th>
+                    <th>No.</th>
                     <th>Date</th>
+                    <th>Doc No.</th>
                     <th>Action Name</th>
                     <th>Action No.</th>
                     <th>Debit</th>
@@ -44,6 +45,7 @@
                     <td>
                       <div><strong>{{gls.date | date : 'dd/MM/yyyy'}}</strong></div>
                     </td>
+                    <td>{{gls.refno}}</td>
                     <td>{{gls.actname}}</td>
                     <td>{{gls.actno}}</td>
                     <td>{{gls.debit | number:2}}</td>
@@ -52,6 +54,7 @@
                 </tbody>
                 <tfoot>
                   <tr>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>

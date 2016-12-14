@@ -21,35 +21,82 @@ var ReceiptSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  creditday: Number,
-  drilldate: Date,
-  refno: String,
-  isincludevat: Boolean,
+  refno: {
+    type: String
+  },
   client: {
+    type: Schema.Types.ObjectId,
     required: 'Please fill Receipt client',
-    type: Schema.ObjectId,
     ref: 'Company'
   },
   items: [{
     product: {
-      type: Schema.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'Product'
     },
-    qty: Number,
-    unitprice: Number,
-    amount: Number,
-    vatamount: Number,
-    whtamount: Number,
-    totalamount: Number
+    qty: {
+      type: Number
+    },
+    unitprice: {
+      type: Number,
+      default: 0
+    },
+    amount: {
+      type: Number,
+      default: 0
+    },
+    vatamount: {
+      type: Number,
+      default: 0
+    },
+    whtamount: {
+      type: Number,
+      default: 0
+    },
+    totalamount: {
+      type: Number,
+      default: 0
+    }
   }],
-  amount: Number,
-  discountamount: Number,
-  amountafterdiscount: Number,
-  vatamount: Number,
-  whtamount: Number,
-  totalamount: Number,
-  receiptstated: String,
-  receiptrefno: String,
+  drilldate: {
+    type: Date,
+  },
+  creditday: {
+    type: Number
+  },
+  isincludevat: {
+    type: Boolean
+  },
+  amount: {
+    type: Number,
+    default: 0
+  },
+  discountamount: {
+    type: Number,
+    default: 0
+  },
+  amountafterdiscount: {
+    type: Number,
+    default: 0
+  },
+  vatamount: {
+    type: Number,
+    default: 0
+  },
+  whtamount: {
+    type: Number,
+    default: 0
+  },
+  totalamount: {
+    type: Number,
+    default: 0
+  },
+  receiptstated: {
+    type: String
+  },
+  receiptrefno: {
+    type: String
+  },
   created: {
     type: Date,
     default: Date.now

@@ -23,12 +23,11 @@
     vm.selectCustomer = selectCustomer;
     vm.creditdayChanged = creditdayChanged;
     vm.calculate = calculate;
-    vm.addItem = addItem;
     vm.init = init;
     vm.selectedProduct = selectedProduct;
     vm.selectedProductss = null;
-    vm.removeItem = removeItem;
-    vm.productChanged = productChanged;
+    vm.changeUnitPrice = changeUnitPrice;
+    vm.removeProduct = removeProduct;
 
     var dat = new Date();
     Date.prototype.addDays = function (days) {
@@ -38,22 +37,30 @@
     };
 
     function creditdayChanged(docdate) {
+      // if (!docdate) {
       vm.quotation.drilldate = dat.addDays(vm.quotation.creditday);
+      // } else {
+      //   vm.quotation.creditday = Math.round((vm.quotation.drilldate - vm.quotation.docdate) / 86400000);
+      // }
     }
 
     function setData() {
-      if (!vm.quotation._id) {
+
+      if (vm.quotation._id) {
+        vm.quotation.docdate = new Date(vm.quotation.docdate);
+        vm.quotation.drilldate = new Date(vm.quotation.drilldate);
+      } else {
         vm.quotation.docdate = new Date();
         vm.quotation.drilldate = new Date();
+      }
+
+      if (!vm.quotation.items) {
         vm.quotation.items = [{
           product: new ProductsService(),
           qty: 1
         }];
-      } else {
-        vm.quotation.docdate = new Date(vm.quotation.docdate);
-        vm.quotation.drilldate = new Date(vm.quotation.drilldate);
-        console.log(vm.quotation);
       }
+
     }
 
     function readClient() {
@@ -63,11 +70,8 @@
     }
 
     function selectCustomer() {
-
       vm.quotation.creditday = vm.quotation.client.creditday;
       vm.quotation.drilldate = dat.addDays(vm.quotation.creditday);
-      creditdayChanged();
-      //vm.quotation.drilldate = vm.quotation.client.creditday + vm.quotation.docdate;
     }
 
 
@@ -78,65 +82,42 @@
     }
 
     function calculate(item) {
-
-      item.unitprice = item.unitprice || item.product.priceexcludevat;
-      item.qty = item.qty || 1;
-      item.amount = item.unitprice * item.qty;
-      item.whtamount = item.whtamount || 0;
-      item.vatamount = item.amount * 0.07;
-      if (item.product.category === 'S') {
-        item.whtamount = item.amount * 0.03;
-      } else if (item.product.category === 'R') {
-        item.whtamount = item.amount * 0.05;
+      // item.unitprice = item.product.priceexcludevat;
+      // item.qty = 1;
+      if (item) {
+        item.amount = item.unitprice * item.qty;
+        item.vatamount = item.amount * 0.07;
+        if (item.product.category === 'S') {
+          item.whtamount = item.amount * 0.03;
+        } else if (item.product.category === 'R') {
+          item.whtamount = item.amount * 0.05;
+        } else {
+          item.whtamount = 0;
+        }
+        item.totalamount = (item.amount + item.vatamount) - item.whtamount;
       }
-      item.totalamount = (item.amount + item.vatamount) - item.whtamount;
 
-
-
-      sumary();
-
-    }
-    function sumary() {
       vm.quotation.amount = 0;
       vm.quotation.vatamount = 0;
       vm.quotation.whtamount = 0;
       vm.quotation.totalamount = 0;
+
       vm.quotation.items.forEach(function (itm) {
-        vm.quotation.amount += itm.amount || 0;
-        vm.quotation.vatamount += itm.vatamount || 0;
-        vm.quotation.whtamount += itm.whtamount || 0;
-        vm.quotation.totalamount += itm.totalamount || 0;
-      });
-    }
-    function addItem() {
-      vm.quotation.items.push({
-        product: new ProductsService(),
-        qty: 1
-      });
-    }
-    function removeItem(item) {
-      //vm.quotation.items.splice(item);
-      vm.quotation.items.splice(vm.quotation.items.indexOf(item), 1);
 
-      sumary();
+        vm.quotation.amount += itm.amount;
+        vm.quotation.vatamount += itm.vatamount;
+        vm.quotation.whtamount += itm.whtamount;
+        vm.quotation.totalamount += itm.totalamount;
+
+      });
+
     }
-    function productChanged(item) {
+
+    function changeUnitPrice(item) {
       item.unitprice = item.product.priceexcludevat;
-      item.qty = item.qty || 1;
-      item.amount = item.unitprice * item.qty;
-      item.whtamount = item.whtamount || 0;
-      item.vatamount = item.amount * 0.07;
-      if (item.product.category === 'S') {
-        item.whtamount = item.amount * 0.03;
-      } else if (item.product.category === 'R') {
-        item.whtamount = item.amount * 0.05;
-      }
-      item.totalamount = (item.amount + item.vatamount) - item.whtamount;
-
-
-
-      sumary();
+      calculate(item);
     }
+
     function init() {
 
       vm.setData();
@@ -146,13 +127,16 @@
     }
 
     function selectedProduct() {
-      console.log(vm.selectedProductss);
       vm.quotation.items.push({
         product: new ProductsService(),
         qty: 1
       });
     }
 
+    function removeProduct(index) {
+      vm.quotation.items.splice(index, 1);
+      calculate();
+    }
 
     // Remove existing Quotation
     function remove() {

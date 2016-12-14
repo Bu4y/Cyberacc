@@ -12,11 +12,11 @@ var path = require('path'),
 /**
  * Create a Receipt
  */
-exports.create = function (req, res) {
+exports.create = function(req, res) {
   var receipt = new Receipt(req.body);
   receipt.user = req.user;
-  console.log(receipt);
-  receipt.save(function (err) {
+
+  receipt.save(function(err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -30,7 +30,7 @@ exports.create = function (req, res) {
 /**
  * Show the current Receipt
  */
-exports.read = function (req, res) {
+exports.read = function(req, res) {
   // convert mongoose document to JSON
   var receipt = req.receipt ? req.receipt.toJSON() : {};
 
@@ -44,12 +44,12 @@ exports.read = function (req, res) {
 /**
  * Update a Receipt
  */
-exports.update = function (req, res) {
+exports.update = function(req, res) {
   var receipt = req.receipt;
 
   receipt = _.extend(receipt, req.body);
 
-  receipt.save(function (err) {
+  receipt.save(function(err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -63,10 +63,10 @@ exports.update = function (req, res) {
 /**
  * Delete an Receipt
  */
-exports.delete = function (req, res) {
+exports.delete = function(req, res) {
   var receipt = req.receipt;
 
-  receipt.remove(function (err) {
+  receipt.remove(function(err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -80,8 +80,8 @@ exports.delete = function (req, res) {
 /**
  * List of Receipts
  */
-exports.list = function (req, res) {
-  Receipt.find().sort('-created').populate('user', 'displayName').populate('client').populate('items.product').exec(function (err, receipts) {
+exports.list = function(req, res) {
+  Receipt.find().sort('-created').populate('user', 'displayName').populate('client').populate('items.product').exec(function(err, receipts) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -95,7 +95,7 @@ exports.list = function (req, res) {
 /**
  * Receipt middleware
  */
-exports.receiptByID = function (req, res, next, id) {
+exports.receiptByID = function(req, res, next, id) {
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).send({

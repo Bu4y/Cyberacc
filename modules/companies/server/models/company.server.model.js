@@ -12,8 +12,8 @@ var mongoose = require('mongoose'),
 var CompanySchema = new Schema({
   name: {
     type: String,
-    default: '',
     unique: true,
+    default: '',
     required: 'Please fill Company name',
     trim: true
   },
@@ -23,23 +23,41 @@ var CompanySchema = new Schema({
   },
   taxid: {
     type: String,
-    default: '',
     unique: true,
-    required: 'Please fill Company taxid',
-    trim: true
+    required: 'Please fill Company taxid'
   },
-  brunch: String,
-  telofficeno: String,
-  mobileno: String,
-  faxno: String,
-  email: String,
-  contact: String,
-  website: String,
+  brunch: {
+    type: String
+  },
+  telofficeno: {
+    type: String
+  },
+  mobileno: {
+    type: String
+  },
+  faxno: {
+    type: String
+  },
+  email: {
+    type: String
+  },
+  contact: {
+    type: String
+  },
+  website: {
+    type: String
+  },
   creditday: {
     type: Number,
     default: 0
   },
-  note: String,
+  note: {
+    type: String
+  },
+  accountno: {
+    type: String,
+    required: 'Please fill Company accountno'
+  },
   created: {
     type: Date,
     default: Date.now

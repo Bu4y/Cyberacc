@@ -2,7 +2,7 @@
   <div class="page-header">
     <h1>Invoices</h1>
   </div>
-  <div class="list-group">
+  <div class="list-group" ng-show="vm.invoices.length > 0">
     <div class="form-group">
       <table class="table">
         <thead>
@@ -14,8 +14,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="invoice in vm.invoices " ui-sref="invoices.view({ invoiceId: invoice._id })">
-            <td>{{$index+1}}</td>
+          <tr ng-repeat="invoice in vm.invoices" ui-sref="invoices.view({ invoiceId: invoice._id })">
+            <td>
+              <p class="list-group-item-heading">{{$index+1}}</p>
+            </td>
             <td>
               <p class="list-group-item-heading" ng-bind="invoice.client.name"></p>
             </td>

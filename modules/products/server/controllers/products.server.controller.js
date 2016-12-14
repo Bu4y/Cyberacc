@@ -15,13 +15,16 @@ var path = require('path'),
 exports.create = function (req, res) {
   var product = new Product(req.body);
   product.user = req.user;
+
   if (product.isincludevat) {
     product.priceincludevat = product.saleprice;
     product.priceexcludevat = product.saleprice / 1.07;
   } else {
-    product.priceexcludevat = product.saleprice;
     product.priceincludevat = product.saleprice * 1.07;
+    product.priceexcludevat = product.saleprice;
   }
+
+
   product.save(function (err) {
     if (err) {
       return res.status(400).send({
@@ -59,8 +62,8 @@ exports.update = function (req, res) {
     product.priceincludevat = product.saleprice;
     product.priceexcludevat = product.saleprice / 1.07;
   } else {
-    product.priceexcludevat = product.saleprice;
     product.priceincludevat = product.saleprice * 1.07;
+    product.priceexcludevat = product.saleprice;
   }
 
   product.save(function (err) {

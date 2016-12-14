@@ -48,8 +48,12 @@ var PaymentSchema = new Schema({
   vatamount: Number,
   whtamount: Number,
   totalamount: Number,
-  paymentstated: String,
-  paymentrefno: String,
+  paymentstated: {
+    type: String
+  },
+  paymentrefno: {
+    type: String
+  },
   created: {
     type: Date,
     default: Date.now

@@ -24,8 +24,7 @@ var GlSchema = new Schema({
     debit: Number,
     credit: Number,
     refno: String,
-    stated : String,
-    statedrefno: String
+    docno: String
   }],
   status: String,
   totaldebit: Number,

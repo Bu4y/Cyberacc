@@ -13,31 +13,44 @@ var ProductSchema = new Schema({
   name: {
     type: String,
     default: '',
-    required: 'Please fill Product name',
     unique: true,
+    required: 'Please fill Product name',
     trim: true
+  },
+  description: {
+    type: String
   },
   category: {
     type: String,
-    enum: ['P', 'S', 'R']
+    enum: ['P', 'R', 'S', 'E']
   },
   isincludevat: {
     type: Boolean,
-    default: false,
-    required: 'Please fill Product isincludevat',
+    required: 'Please fill Product isincludevat'
   },
   saleprice: {
     type: Number,
-    required: 'Please fill Product saleprice',
+    required: 'Please fill Product saleprice'
   },
-  buyprice: Number,
-  priceincludevat: Number,
-  priceexcludevat: Number,
-  unitname: String,
-  description: {
+  buyprice: {
+    type: Number
+  },
+  priceincludevat: {
+    type: Number
+  },
+  priceexcludevat: {
+    type: Number
+  },
+  unitname: {
+    type: String
+  },
+  saleaccount: {
     type: String,
-    default: '',
-    trim: true
+    required: 'Please fill Product saleaccount'
+  },
+  buyaccount: {
+    type: String,
+    required: 'Please fill Product buyaccount'
   },
   created: {
     type: Date,

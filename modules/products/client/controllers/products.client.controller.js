@@ -18,9 +18,12 @@
     vm.remove = remove;
     vm.save = save;
     vm.init = init;
+    if (vm.product.isincludevat === undefined) {
+      vm.product.isincludevat = false;
+    }
 
     function init() {
-      vm.categories = [{ key: 'P', value: 'Product' }, { key: 'S', value: 'Service' }, { key: 'R', value: 'Rent' }];
+      vm.categories = [{ 'key': 'P', 'value': 'Product' }, { 'key': 'R', 'value': 'Rent' }, { 'key': 'S', 'value': 'Service' }, { 'key': 'E', 'value': 'Expense' }];
     }
 
     // Remove existing Product

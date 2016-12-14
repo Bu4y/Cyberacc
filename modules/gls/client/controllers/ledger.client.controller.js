@@ -19,13 +19,17 @@
     // Ledger controller logic
     // ...
 
-    init();
+    // init();
     getByDate();
     function init() {
-      
+
     }
 
     function getByDate() {
+      vm.moneyDebit = [];
+      vm.moneyCredit = [];
+      vm.customer = [];
+      vm.supplier = [];
       angular.forEach(vm.gl.transaction, function (e) {
         var day = new Date(vm.date).getDate();
         var eday = new Date(e.date).getDate();

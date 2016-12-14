@@ -1,33 +1,33 @@
-<section style="min-height:1000px;">
+<section>
   <div class="page-header">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="wrapper wrapper-content animated fadeInRight">
-          <div class="ibox-content p-xl">
-            <div class="row">
-              <div class="col-md-12">
-                <h2>รายละเอียดบริษัท</h2>
-                <ul class="list-group">
-                  <li class="list-group-item">ชื่อบริษัท : {{vm.company.name}}</li>
-                  <li class="list-group-item">ที่อยู่ : {{vm.company.address}}</li>
-                  <li class="list-group-item">TAX ID : {{vm.company.taxid}}</li>
-                  <li class="list-group-item">Tel : {{vm.company.telofficeno}}</li>
-                  <li class="list-group-item">Mobile : {{vm.company.mobileno}}</li>
-                  <li class="list-group-item">Fax : {{vm.company.faxno}}</li>
-                  <li class="list-group-item">Email : {{vm.company.email}}</li>
-                  <li class="list-group-item">ติดต่อ : {{vm.company.contact}}</li>
-                  <li class="list-group-item">Website : {{vm.company.website}}</li>
-                  <li class="list-group-item">Credit : {{vm.company.creditday}}</li>
-                  <li class="list-group-item">สาขา : {{vm.company.brunch}}</li>
-                  <li class="list-group-item">หมายเหตุ : {{vm.company.note}}</li>
-                </ul>
-              </div>
-            </div>
-            </div>
-        </div>
-      </div>
+    <h1 ng-bind="vm.company.name"></h1>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <li class="list-group-item"><b>Account No : </b>{{vm.company.accountno}}</li>      
+      <li class="list-group-item"><b>Company Name : </b>{{vm.company.name}}</li>
+      <li class="list-group-item"><b>Address : </b>{{vm.company.address}}</li>
+      <li class="list-group-item"><b>TAX ID : </b>{{vm.company.taxid}}</li>
+      <li class="list-group-item" ng-show="vm.company.telofficeno"><b>Tel : </b>{{vm.company.telofficeno}}</li>
+      <li class="list-group-item" ng-show="!vm.company.telofficeno"><b>Tel : </b>-</li>
+      <li class="list-group-item" ng-show="vm.company.mobileno"><b>Mobile : </b>{{vm.company.mobileno}}</li>
+      <li class="list-group-item" ng-show="!vm.company.mobileno"><b>Mobile : </b>-</li>
+      <li class="list-group-item" ng-show="vm.company.faxno"><b>Fax : </b>{{vm.company.faxno}}</li>
+      <li class="list-group-item" ng-show="!vm.company.faxno"><b>Fax : </b>-</li>
+      <li class="list-group-item" ng-show="vm.company.email"><b>Email : </b>{{vm.company.email}}</li>
+      <li class="list-group-item" ng-show="!vm.company.email"><b>Email : </b>-</li>
+      <li class="list-group-item" ng-show="vm.company.contact"><b>Contact : </b>{{vm.company.contact}}</li>
+      <li class="list-group-item" ng-show="!vm.company.contact"><b>Contact : </b>-</li>
+      <li class="list-group-item" ng-show="vm.company.website"><b>Website : </b>{{vm.company.website}}</li>
+      <li class="list-group-item" ng-show="!vm.company.website"><b>Website : </b>-</li>
+      <li class="list-group-item" ng-show="vm.company.creditday"><b>Credit Day : </b>{{vm.company.creditday}}</li>
+      <li class="list-group-item" ng-show="!vm.company.creditday"><b>Credit Day : </b>-</li>
+      <li class="list-group-item" ng-show="vm.company.note"><b>Note : </b>{{vm.company.note}}</li>
+      <li class="list-group-item" ng-show="!vm.company.note"><b>Note : </b>-</li>
     </div>
   </div>
+  <br>
+
   <div class="pull-right" ng-show="vm.company.isCurrentUserOwner">
     <a class="btn btn-primary" ui-sref="companies.edit({ companyId: vm.company._id })">
       <i class="glyphicon glyphicon-edit"></i>
@@ -46,4 +46,5 @@
       <span ng-if="!vm.company.user">Deleted User</span>
     </em>
   </small>
+  <p class="lead" ng-bind="vm.company.content"></p>
 </section>

@@ -20,22 +20,15 @@ function getReceiving(callback) {
       callback(err, transaction);
     } else {
       receivings.forEach(function (receiving) {
-        transaction.push({
-          date: receiving.docdate,
-          refno: receiving.docno,
-          actname: 'เจ้าหนี้ - ' + receiving.client.name,
-          actno: receiving.client._id,
-          debit: 0,
-          credit: receiving.totalamount + (receiving.whtamount || 0)
-        });
         receiving.items.forEach(function (item) {
           transaction.push({
             date: receiving.docdate,
             refno: receiving.docno,
-            actname: 'รายจ่ายจากการซื้อ - ' + item.product.name,
-            actno: item.product._id,
+            actname: item.product.name,
+            actno: item.product.buyaccount,
             debit: item.amount,
-            credit: 0
+            credit: 0,
+            docno: receiving.docno
           });
         });
         transaction.push({
@@ -44,7 +37,17 @@ function getReceiving(callback) {
           actname: 'ภาษีซื้อ',
           actno: '10000',
           debit: receiving.vatamount,
-          credit: 0
+          credit: 0,
+          docno: receiving.docno
+        });
+        transaction.push({
+          date: receiving.docdate,
+          refno: receiving.docno,
+          actname: 'เจ้าหนี้ - ' + receiving.client.name,
+          actno: receiving.client.accountno,
+          debit: 0,
+          credit: receiving.totalamount + (receiving.whtamount || 0),
+          docno: receiving.docno
         });
       });
     }
@@ -65,7 +68,7 @@ function getInvoice(callback) {
           date: invoice.docdate,
           refno: invoice.docno,
           actname: 'ลูกหนี้ - ' + invoice.client.name,
-          actno: invoice.client._id,
+          actno: invoice.client.accountno,
           debit: invoice.totalamount + (invoice.whtamount || 0),
           credit: 0
         });
@@ -74,7 +77,7 @@ function getInvoice(callback) {
             date: invoice.docdate,
             refno: invoice.docno,
             actname: 'รายได้จากการขาย - ' + item.product.name,
-            actno: item.product._id,
+            actno: item.product.saleaccount,
             debit: 0,
             credit: item.amount
           });
@@ -105,29 +108,37 @@ function getReceipt(callback) {
         transaction.push({
           date: receipt.docdate,
           refno: receipt.docno,
-          actname: receipt.receiptstated + receipt.client.name,
-          actno: receipt.client._id,
+          actname: receipt.receiptstated,
+          actno: receipt.receiptstated,
           debit: receipt.totalamount + (receipt.whtamount || 0),
           credit: 0
-        });
-        receipt.items.forEach(function (item) {
-          transaction.push({
-            date: receipt.docdate,
-            refno: receipt.docno,
-            actname: 'รายได้จากการขาย - ' + item.product.name,
-            actno: item.product._id,
-            debit: 0,
-            credit: item.amount
-          });
         });
         transaction.push({
           date: receipt.docdate,
           refno: receipt.docno,
-          actname: 'ภาษีขาย',
-          actno: '40000',
+          actname: 'ลูกหนี้ - ' + receipt.client.name,
+          actno: receipt.client.accountno,
           debit: 0,
-          credit: receipt.vatamount
+          credit: receipt.totalamount + (receipt.whtamount || 0)
         });
+        // receipt.items.forEach(function (item) {
+        //   transaction.push({
+        //     date: receipt.docdate,
+        //     refno: receipt.docno,
+        //     actname: 'รายได้จากการขาย - ' + item.product.name,
+        //     actno: item.product._id,
+        //     debit: 0,
+        //     credit: item.amount
+        //   });
+        // });
+        // transaction.push({
+        //   date: receipt.docdate,
+        //   refno: receipt.docno,
+        //   actname: 'ภาษีขาย',
+        //   actno: '40000',
+        //   debit: 0,
+        //   credit: receipt.vatamount
+        // });
       });
     }
     callback(err, transaction);
@@ -146,29 +157,37 @@ function getPayment(callback) {
         transaction.push({
           date: payment.docdate,
           refno: payment.docno,
-          actname: payment.paymentstated + payment.client.name,
-          actno: payment.client._id,
-          debit: 0,
-          credit: payment.totalamount + (payment.whtamount || 0)
-        });
-        payment.items.forEach(function (item) {
-          transaction.push({
-            date: payment.docdate,
-            refno: payment.docno,
-            actname: 'รายจ่ายจากการซื้อ - ' + item.product.name,
-            actno: item.product._id,
-            debit: item.amount,
-            credit: 0
-          });
+          actname: payment.client.name,
+          actno: payment.client.accountno,
+          debit: payment.totalamount + (payment.whtamount || 0),
+          credit: 0
         });
         transaction.push({
           date: payment.docdate,
           refno: payment.docno,
-          actname: 'ภาษีซื้อ',
-          actno: '50000',
-          debit: payment.vatamount,
-          credit: 0
+          actname: payment.paymentstated,
+          actno: payment.paymentstated,
+          debit: 0,
+          credit: payment.totalamount + (payment.whtamount || 0)
         });
+        // payment.items.forEach(function (item) {
+        //   transaction.push({
+        //     date: payment.docdate,
+        //     refno: payment.docno,
+        //     actname: 'รายจ่ายจากการซื้อ - ' + item.product.name,
+        //     actno: item.product._id,
+        //     debit: item.amount,
+        //     credit: 0
+        //   });
+        // });
+        // transaction.push({
+        //   date: payment.docdate,
+        //   refno: payment.docno,
+        //   actname: 'ภาษีซื้อ',
+        //   actno: '50000',
+        //   debit: payment.vatamount,
+        //   credit: 0
+        // });
       });
     }
     callback(err, transaction);

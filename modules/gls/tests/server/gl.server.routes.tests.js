@@ -69,7 +69,9 @@ describe('Gl CRUD tests', function () {
       buyprice: 50,
       saleprice: 100,
       isincludevat: false,
-      unitname: 'Product Unitname'
+      unitname: 'Product Unitname',
+      saleaccount: 10005,
+      buyaccount: 10001
     });
 
     company = new Company({
@@ -83,7 +85,8 @@ describe('Gl CRUD tests', function () {
       email: 'Company Email',
       contact: 'Company Contact',
       website: 'Company Website',
-      note: 'Company Note'
+      note: 'Company Note',
+      accountno: '1001'
     });
 
     receiving = new Receiving({
@@ -155,6 +158,7 @@ describe('Gl CRUD tests', function () {
       amountafterdiscount: 0,
       vatamount: 7,
       totalamount: 107,
+      receiptstated: '1001',
       user: user
     });
 
@@ -179,6 +183,7 @@ describe('Gl CRUD tests', function () {
       amountafterdiscount: 0,
       vatamount: 7,
       totalamount: 107,
+      paymentstated: '1001',
       user: user
     });
 
@@ -191,276 +196,290 @@ describe('Gl CRUD tests', function () {
       });
       company.save(function () {
         product.save(function () {
-          receiving.save(function () {
-            invoice.save(function () {
-              receipt.save(function () {
-                payment.save(function () {
-                  done();
-                });
-              });
-            });
-          });
+          done();
         });
       });
     });
   });
 
   it('should be able to save a Gl if get receivings', function (done) {
-    agent.post('/api/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
+    receiving.save(function () {
+      agent.post('/api/auth/signin')
+        .send(credentials)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
 
-        // Get the userId
-        var userId = user.id;
+          // Get the userId
+          var userId = user.id;
 
-        // Save a new Gl
-        agent.post('/api/gls')
-          .send(gl)
-          .expect(200)
-          .end(function (glSaveErr, glSaveRes) {
-            // Handle Gl save error
-            if (glSaveErr) {
-              return done(glSaveErr);
-            }
+          // Save a new Gl
+          agent.post('/api/gls')
+            .send(gl)
+            .expect(200)
+            .end(function (glSaveErr, glSaveRes) {
+              // Handle Gl save error
+              if (glSaveErr) {
+                return done(glSaveErr);
+              }
 
-            // Get a list of Gls
-            agent.get('/api/gls')
-              .end(function (glsGetErr, glsGetRes) {
-                // Handle Gls save error
-                if (glsGetErr) {
-                  return done(glsGetErr);
-                }
+              // Get a list of Gls
+              agent.get('/api/gls')
+                .end(function (glsGetErr, glsGetRes) {
+                  // Handle Gls save error
+                  if (glsGetErr) {
+                    return done(glsGetErr);
+                  }
 
-                // Get Gls list
-                var gls = glsGetRes.body;
+                  // Get Gls list
+                  var gls = glsGetRes.body;
 
-                // Set assertions credit with client
-                (gls[0].user._id).should.equal(userId);
-                (gls[0].transaction.length).should.match(12);
-                (gls[0].transaction[0].debit).should.match(0);
-                (gls[0].transaction[0].credit).should.match(receiving.totalamount);
-                (gls[0].transaction[0].actname).should.match('เจ้าหนี้ - ' + company.name);
-                (gls[0].transaction[0].date).should.match(receiving.docdate);
-                // (gls[0].transaction[0].actno).should.match(company._id);
+                  // Set assertions debit with items
+                  (gls[0].transaction[0].debit).should.match(receiving.items[0].amount);
+                  (gls[0].transaction[0].credit).should.match(0);
+                  (gls[0].transaction[0].actname).should.match(product.name);
+                  (gls[0].transaction[0].date).should.match(receiving.docdate);
+                  (gls[0].transaction[0].docno).should.match(receiving.docno);
+                  // (gls[0].transaction[1].actno).should.match(product._id);
 
-                // Set assertions debit with items
-                (gls[0].transaction[1].debit).should.match(receiving.items[0].amount);
-                (gls[0].transaction[1].credit).should.match(0);
-                (gls[0].transaction[1].actname).should.match('รายจ่ายจากการซื้อ - ' + product.name);
-                (gls[0].transaction[1].date).should.match(receiving.docdate);
-                // (gls[0].transaction[1].actno).should.match(product._id);
+                  // Set assertions debit with vatamount
+                  (gls[0].transaction[1].debit).should.match(receiving.vatamount);
+                  (gls[0].transaction[1].credit).should.match(0);
+                  (gls[0].transaction[1].actname).should.match('ภาษีซื้อ');
+                  (gls[0].transaction[1].date).should.match(receiving.docdate);
+                  (gls[0].transaction[1].docno).should.match(receiving.docno);
+                  // (gls[0].transaction[2].actno).should.match('10000');
 
-                // Set assertions debit with vatamount
-                (gls[0].transaction[2].debit).should.match(receiving.vatamount);
-                (gls[0].transaction[2].credit).should.match(0);
-                (gls[0].transaction[2].actname).should.match('ภาษีซื้อ');
-                (gls[0].transaction[2].date).should.match(receiving.docdate);
-                // (gls[0].transaction[2].actno).should.match('10000');
+                  // Set assertions credit with client
+                  (gls[0].user._id).should.equal(userId);
+                  (gls[0].transaction.length).should.match(3);
+                  (gls[0].transaction[2].debit).should.match(0);
+                  (gls[0].transaction[2].credit).should.match(receiving.totalamount);
+                  (gls[0].transaction[2].actname).should.match('เจ้าหนี้ - ' + company.name);
+                  (gls[0].transaction[2].date).should.match(receiving.docdate);
+                  (gls[0].transaction[2].docno).should.match(receiving.docno);
+                  // (gls[0].transaction[0].actno).should.match(company._id);
+                  // Call the assertion callback
+                  Receiving.remove().exec(function () {
+                    Gl.remove().exec(done);
+                  });
+                });
+            });
+        });
 
-                // Call the assertion callback
-                done();
-              });
-          });
-      });
+    });
+
   });
 
   it('should be able to save a Gl if get invoice', function (done) {
-    agent.post('/api/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
+    invoice.save(function () {
+      agent.post('/api/auth/signin')
+        .send(credentials)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
 
-        // Get the userId
-        var userId = user.id;
+          // Get the userId
+          var userId = user.id;
 
-        // Save a new Gl
-        agent.post('/api/gls')
-          .send(gl)
-          .expect(200)
-          .end(function (glSaveErr, glSaveRes) {
-            // Handle Gl save error
-            if (glSaveErr) {
-              return done(glSaveErr);
-            }
+          // Save a new Gl
+          agent.post('/api/gls')
+            .send(gl)
+            .expect(200)
+            .end(function (glSaveErr, glSaveRes) {
+              // Handle Gl save error
+              if (glSaveErr) {
+                return done(glSaveErr);
+              }
 
-            // Get a list of Gls
-            agent.get('/api/gls')
-              .end(function (glsGetErr, glsGetRes) {
-                // Handle Gls save error
-                if (glsGetErr) {
-                  return done(glsGetErr);
-                }
+              // Get a list of Gls
+              agent.get('/api/gls')
+                .end(function (glsGetErr, glsGetRes) {
+                  // Handle Gls save error
+                  if (glsGetErr) {
+                    return done(glsGetErr);
+                  }
 
-                // Get Gls list
-                var gls = glsGetRes.body;
+                  // Get Gls list
+                  var gls = glsGetRes.body;
 
-                // Set assertions credit with client
-                (gls[0].user._id).should.equal(userId);
-                (gls[0].transaction.length).should.match(12);
-                (gls[0].transaction[3].debit).should.match(invoice.totalamount);
-                (gls[0].transaction[3].credit).should.match(0);
-                (gls[0].transaction[3].actname).should.match('ลูกหนี้ - ' + company.name);
-                (gls[0].transaction[3].date).should.match(invoice.docdate);
-                // (gls[0].transaction[0].actno).should.match(company._id);
+                  // Set assertions credit with client
+                  (gls[0].user._id).should.equal(userId);
+                  (gls[0].transaction.length).should.match(3);
+                  (gls[0].transaction[0].debit).should.match(invoice.totalamount);
+                  (gls[0].transaction[0].credit).should.match(0);
+                  (gls[0].transaction[0].actname).should.match('ลูกหนี้ - ' + company.name);
+                  (gls[0].transaction[0].date).should.match(invoice.docdate);
+                  (gls[0].transaction[0].actno).should.match(company.accountno);
 
-                // Set assertions debit with items
-                (gls[0].transaction[4].debit).should.match(0);
-                (gls[0].transaction[4].credit).should.match(invoice.items[0].amount);
-                (gls[0].transaction[4].actname).should.match('รายได้จากการขาย - ' +product.name);
-                (gls[0].transaction[4].date).should.match(invoice.docdate);
-                // (gls[0].transaction[1].actno).should.match(product._id);
+                  // Set assertions debit with items
+                  (gls[0].transaction[1].debit).should.match(0);
+                  (gls[0].transaction[1].credit).should.match(invoice.items[0].amount);
+                  (gls[0].transaction[1].actname).should.match('รายได้จากการขาย - ' + product.name);
+                  (gls[0].transaction[1].date).should.match(invoice.docdate);
+                  (gls[0].transaction[1].actno).should.match(product.saleaccount);
 
-                // Set assertions debit with vatamount
-                (gls[0].transaction[5].debit).should.match(0);
-                (gls[0].transaction[5].credit).should.match(invoice.vatamount);
-                (gls[0].transaction[5].actname).should.match('ภาษีขาย');
-                (gls[0].transaction[5].date).should.match(invoice.docdate);
-                // (gls[0].transaction[2].actno).should.match('10000');
+                  // Set assertions debit with vatamount
+                  (gls[0].transaction[2].debit).should.match(0);
+                  (gls[0].transaction[2].credit).should.match(invoice.vatamount);
+                  (gls[0].transaction[2].actname).should.match('ภาษีขาย');
+                  (gls[0].transaction[2].date).should.match(invoice.docdate);
+                  (gls[0].transaction[2].actno).should.match('20000');
 
-                // Call the assertion callback
-                done();
-              });
-          });
-      });
+                  // Call the assertion callback
+                  Invoice.remove().exec(function () {
+                    Gl.remove().exec(done);
+                  });
+                });
+            });
+        });
+    });
   });
 
   it('should be able to save a Gl if get receipt', function (done) {
-    agent.post('/api/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
+    receipt.save(function () {
+      agent.post('/api/auth/signin')
+        .send(credentials)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
 
-        // Get the userId
-        var userId = user.id;
+          // Get the userId
+          var userId = user.id;
 
-        // Save a new Gl
-        agent.post('/api/gls')
-          .send(gl)
-          .expect(200)
-          .end(function (glSaveErr, glSaveRes) {
-            // Handle Gl save error
-            if (glSaveErr) {
-              return done(glSaveErr);
-            }
+          // Save a new Gl
+          agent.post('/api/gls')
+            .send(gl)
+            .expect(200)
+            .end(function (glSaveErr, glSaveRes) {
+              // Handle Gl save error
+              if (glSaveErr) {
+                return done(glSaveErr);
+              }
 
-            // Get a list of Gls
-            agent.get('/api/gls')
-              .end(function (glsGetErr, glsGetRes) {
-                // Handle Gls save error
-                if (glsGetErr) {
-                  return done(glsGetErr);
-                }
+              // Get a list of Gls
+              agent.get('/api/gls')
+                .end(function (glsGetErr, glsGetRes) {
+                  // Handle Gls save error
+                  if (glsGetErr) {
+                    return done(glsGetErr);
+                  }
 
-                // Get Gls list
-                var gls = glsGetRes.body;
+                  // Get Gls list
+                  var gls = glsGetRes.body;
+                  // Set assertions credit with client
+                  (gls[0].user._id).should.equal(userId);
+                  (gls[0].transaction.length).should.match(2);
+                  (gls[0].transaction[0].debit).should.match(receipt.totalamount);
+                  (gls[0].transaction[0].credit).should.match(0);
+                  (gls[0].transaction[0].actname).should.match(receipt.receiptstated);
+                  (gls[0].transaction[0].date).should.match(receipt.docdate);
+                  (gls[0].transaction[0].actno).should.match(receipt.receiptstated);
 
-                // Set assertions credit with client
-                (gls[0].user._id).should.equal(userId);
-                (gls[0].transaction.length).should.match(12);
-                (gls[0].transaction[6].debit).should.match(receipt.totalamount);
-                (gls[0].transaction[6].credit).should.match(0);
-                (gls[0].transaction[6].actname).should.match('เงินสด - ' + company.name);
-                (gls[0].transaction[6].date).should.match(receipt.docdate);
-                // (gls[0].transaction[0].actno).should.match(company._id);
+                  // Set assertions debit with items
+                  (gls[0].transaction[1].debit).should.match(0);
+                  (gls[0].transaction[1].credit).should.match(receipt.totalamount);
+                  (gls[0].transaction[1].actname).should.match('ลูกหนี้ - ' + company.name);
+                  (gls[0].transaction[1].date).should.match(receipt.docdate);
+                  (gls[0].transaction[1].actno).should.match(company.accountno);
 
-                // Set assertions debit with items
-                (gls[0].transaction[7].debit).should.match(0);
-                (gls[0].transaction[7].credit).should.match(receipt.items[0].amount);
-                (gls[0].transaction[7].actname).should.match('รายได้จากการขาย - ' + product.name);
-                (gls[0].transaction[7].date).should.match(receipt.docdate);
-                // (gls[0].transaction[1].actno).should.match(product._id);
+                  // Set assertions debit with vatamount
+                  // (gls[0].transaction[2].debit).should.match(0);
+                  // (gls[0].transaction[2].credit).should.match(receipt.vatamount);
+                  // (gls[0].transaction[2].actname).should.match('ภาษีขาย');
+                  // (gls[0].transaction[2].date).should.match(receipt.docdate);
+                  // (gls[0].transaction[2].actno).should.match('10000');
 
-                // Set assertions debit with vatamount
-                (gls[0].transaction[8].debit).should.match(0);
-                (gls[0].transaction[8].credit).should.match(receipt.vatamount);
-                (gls[0].transaction[8].actname).should.match('ภาษีขาย');
-                (gls[0].transaction[8].date).should.match(receipt.docdate);
-                // (gls[0].transaction[2].actno).should.match('10000');
-
-                // Call the assertion callback
-                done();
-              });
-          });
-      });
+                  // Call the assertion callback
+                  Receipt.remove().exec(function () {
+                    Gl.remove().exec(done);
+                  });
+                });
+            });
+        });
+    });
   });
 
   it('should be able to save a Gl if get payment', function (done) {
-    agent.post('/api/auth/signin')
-      .send(credentials)
-      .expect(200)
-      .end(function (signinErr, signinRes) {
-        // Handle signin error
-        if (signinErr) {
-          return done(signinErr);
-        }
+    payment.save(function () {
+      agent.post('/api/auth/signin')
+        .send(credentials)
+        .expect(200)
+        .end(function (signinErr, signinRes) {
+          // Handle signin error
+          if (signinErr) {
+            return done(signinErr);
+          }
 
-        // Get the userId
-        var userId = user.id;
+          // Get the userId
+          var userId = user.id;
 
-        // Save a new Gl
-        agent.post('/api/gls')
-          .send(gl)
-          .expect(200)
-          .end(function (glSaveErr, glSaveRes) {
-            // Handle Gl save error
-            if (glSaveErr) {
-              return done(glSaveErr);
-            }
+          // Save a new Gl
+          agent.post('/api/gls')
+            .send(gl)
+            .expect(200)
+            .end(function (glSaveErr, glSaveRes) {
+              // Handle Gl save error
+              if (glSaveErr) {
+                return done(glSaveErr);
+              }
 
-            // Get a list of Gls
-            agent.get('/api/gls')
-              .end(function (glsGetErr, glsGetRes) {
-                // Handle Gls save error
-                if (glsGetErr) {
-                  return done(glsGetErr);
-                }
+              // Get a list of Gls
+              agent.get('/api/gls')
+                .end(function (glsGetErr, glsGetRes) {
+                  // Handle Gls save error
+                  if (glsGetErr) {
+                    return done(glsGetErr);
+                  }
 
-                // Get Gls list
-                var gls = glsGetRes.body;
+                  // Get Gls list
+                  var gls = glsGetRes.body;
 
-                // Set assertions credit with client
-                (gls[0].user._id).should.equal(userId);
-                (gls[0].transaction.length).should.match(12);
-                (gls[0].transaction[9].debit).should.match(0);
-                (gls[0].transaction[9].credit).should.match(payment.totalamount);
-                (gls[0].transaction[9].actname).should.match('เงินสด - ' + company.name);
-                (gls[0].transaction[9].date).should.match(payment.docdate);
-                // (gls[0].transaction[0].actno).should.match(company._id);
+                  // Set assertions credit with client
 
-                // Set assertions debit with items
-                (gls[0].transaction[10].debit).should.match(payment.items[0].amount);
-                (gls[0].transaction[10].credit).should.match(0);
-                (gls[0].transaction[10].actname).should.match('รายจ่ายจากการซื้อ - ' + product.name);
-                (gls[0].transaction[10].date).should.match(payment.docdate);
-                // (gls[0].transaction[1].actno).should.match(product._id);
+                  // debit ประเภทการรับเงิน
+                  (gls[0].user._id).should.equal(userId);
+                  (gls[0].transaction.length).should.match(2);
+                  (gls[0].transaction[0].credit).should.match(0);
+                  (gls[0].transaction[0].debit).should.match(payment.totalamount);
+                  (gls[0].transaction[0].actname).should.match(company.name);
+                  (gls[0].transaction[0].date).should.match(payment.docdate);
+                  (gls[0].transaction[0].actno).should.match(company.accountno);
 
-                // Set assertions debit with vatamount
-                (gls[0].transaction[11].debit).should.match(payment.vatamount);
-                (gls[0].transaction[11].credit).should.match(0);
-                (gls[0].transaction[11].actname).should.match('ภาษีซื้อ');
-                (gls[0].transaction[11].date).should.match(payment.docdate);
-                // (gls[0].transaction[2].actno).should.match('10000');
+                  // Set assertions debit with items
+                  (gls[0].transaction[1].credit).should.match(payment.totalamount);
+                  (gls[0].transaction[1].debit).should.match(0);
+                  (gls[0].transaction[1].actname).should.match(payment.paymentstated);
+                  (gls[0].transaction[1].date).should.match(payment.docdate);
+                  (gls[0].transaction[1].actno).should.match(payment.paymentstated);
+                  // (gls[0].transaction[1].actno).should.match(product._id);
+
+                  // Set assertions debit with vatamount
+                  // (gls[0].transaction[10].debit).should.match(payment.vatamount);
+                  // (gls[0].transaction[10].credit).should.match(0);
+                  // (gls[0].transaction[10].actname).should.match('ภาษีซื้อ');
+                  // (gls[0].transaction[10].date).should.match(payment.docdate);
+                  // (gls[0].transaction[2].actno).should.match('10000');
 
 
 
-                // Call the assertion callback
-                done();
-              });
-          });
-      });
+                  // Call the assertion callback
+                  Payment.remove().exec(function () {
+                    Gl.remove().exec(done);
+                  });
+                });
+            });
+        });
+    });
   });
 
   it('should not be able to save an Gl if not logged in', function (done) {
@@ -767,15 +786,7 @@ describe('Gl CRUD tests', function () {
     User.remove().exec(function () {
       Company.remove().exec(function () {
         Product.remove().exec(function () {
-          Receiving.remove().exec(function () {
-            Invoice.remove().exec(function () {
-              Receipt.remove().exec(function () {
-                Payment.remove().exec(function () {
-                  Gl.remove().exec(done);
-                });
-              });
-            });
-          });
+          Gl.remove().exec(done);
         });
       });
     });

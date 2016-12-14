@@ -10,6 +10,7 @@
   function ExperimentalBudgetController($scope, gl) {
     var vm = this;
     vm.gl = gl;
+    vm.init = init;
 
     // Experimental budget controller logic
     // ...

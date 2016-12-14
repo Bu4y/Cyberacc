@@ -1,45 +1,34 @@
-<section style="min-height:1000px;">
+<section>
   <div class="page-header">
     <h1>Quotations</h1>
   </div>
-  <div class="list-group">
-
-    <!--<small class="list-group-item-text">
-        Posted on
-        <span ng-bind="quotation.created | date:'mediumDate'"></span>
-        by
-        <span ng-if="quotation.user" ng-bind="quotation.user.displayName"></span>
-        <span ng-if="!quotation.user">Deleted User</span>
-      </small>-->
-
-
-    <div class="form-group">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>No.</th>
-            <th>Customer name</th>
-            <th>Doc No.</th>
-            <th>Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="quotation in vm.quotations " ui-sref="quotations.view({ quotationId: quotation._id })">
-            <td>{{$index+1}}</td>
-            <td>
-              <p class="list-group-item-heading" ng-bind="quotation.client.name"></p>
-            </td>
-            <td>
-              <p class="list-group-item-heading" ng-bind="quotation.docno"></p>
-            </td>
-            <td>
-              <p class="list-group-item-heading" ng-bind="quotation.amount"></p>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    
+  <div class="list-group" ng-show="vm.quotations.length > 0">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Doc No.</th>
+          <th>Customer</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="quotations in vm.quotations" ui-sref="quotations.view({ quotationId: quotations._id })">
+          <td>
+            <p class="list-group-item-heading">{{$index+1}}</p>
+          </td>
+          <td>
+            <p class="list-group-item-heading">{{quotations.docno}}</p>
+          </td>
+          <td>
+            <p class="list-group-item-heading">{{quotations.client.name}}</p>
+          </td>
+          <td>
+            <p class="list-group-item-heading">{{quotations.amount}}</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
   <div class="alert alert-warning text-center" ng-if="vm.quotations.$resolved && !vm.quotations.length">
     No Quotations yet, why don't you <a ui-sref="quotations.create">create one</a>?

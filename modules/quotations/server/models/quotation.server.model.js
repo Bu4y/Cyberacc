@@ -17,37 +17,80 @@ var QuotationSchema = new Schema({
     required: 'Please fill Quotation docno',
     trim: true
   },
-  docdate:{
+  docdate: {
     type: Date,
     default: Date.now
   },
-  creditday:Number,
-  drilldate : Date,
-  refno:String,
-  isincludevat:Boolean,
+  refno: {
+    type: String
+  },
   client: {
+    type: Schema.Types.ObjectId,
     required: 'Please fill Quotation client',
-    type: Schema.ObjectId,
     ref: 'Company'
   },
   items: [{
     product: {
-      type: Schema.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'Product'
     },
-    qty: Number,
-    unitprice: Number,
-    amount: Number,
-    vatamount: Number,
-    whtamount: Number,
-    totalamount: Number
+    qty: {
+      type: Number
+    },
+    unitprice: {
+      type: Number,
+      default: 0
+    },
+    amount: {
+      type: Number,
+      default: 0
+    },
+    vatamount: {
+      type: Number,
+      default: 0
+    },
+    whtamount: {
+      type: Number,
+      default: 0
+    },
+    totalamount: {
+      type: Number,
+      default: 0
+    }
   }],
-  amount: Number,
-  discountamount:Number,
-  amountafterdiscount:Number,
-  vatamount: Number,
-  whtamount: Number,
-  totalamount: Number,
+  drilldate: {
+    type: Date,
+  },
+  creditday: {
+    type: Number
+  },
+  isincludevat: {
+    type: Boolean
+  },
+  amount: {
+    type: Number,
+    default: 0
+  },
+  discountamount: {
+    type: Number,
+    default: 0
+  },
+  amountafterdiscount: {
+    type: Number,
+    default: 0
+  },
+  vatamount: {
+    type: Number,
+    default: 0
+  },
+  whtamount: {
+    type: Number,
+    default: 0
+  },
+  totalamount: {
+    type: Number,
+    default: 0
+  },
   created: {
     type: Date,
     default: Date.now
