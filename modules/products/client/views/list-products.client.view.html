@@ -1,0 +1,80 @@
+<!--<section>
+  <div class="page-header">
+    <h1>Products</h1>
+  </div>
+  <div class="list-group">
+    <a ng-repeat="product in vm.products"
+       ui-sref="products.view({ productId: product._id })"
+       class="list-group-item">
+      <small class="list-group-item-text">
+        Posted on
+        <span ng-bind="product.created | date:'mediumDate'"></span>
+        by
+        <span ng-if="product.user" ng-bind="product.user.displayName"></span>
+        <span ng-if="!product.user">Deleted User</span>
+      </small>
+      <h4 class="list-group-item-heading" ng-bind="product.name"></h4>
+    </a>
+  </div>
+  <div class="alert alert-warning text-center" ng-if="vm.products.$resolved && !vm.products.length">
+    No Products yet, why don't you <a ui-sref="products.create">create one</a>?
+  </div>
+</section>-->
+<!--<section>
+  <div class="page-header">
+    <h1>Companies</h1>
+  </div>
+  <div class="list-group">
+    <a ng-repeat="company in vm.companies"
+       ui-sref="companies.view({ companyId: company._id })"
+       class="list-group-item">
+      <small class="list-group-item-text">
+        Posted on
+        <span ng-bind="company.created | date:'mediumDate'"></span>
+        by
+        <span ng-if="company.user" ng-bind="company.user.displayName"></span>
+        <span ng-if="!company.user">Deleted User</span>
+      </small>
+      <h4 class="list-group-item-heading" ng-bind="company.name"></h4>
+    </a>
+  </div>
+  <div class="alert alert-warning text-center" ng-if="vm.companies.$resolved && !vm.companies.length">
+    No Companies yet, why don't you <a ui-sref="companies.create">create one</a>?
+  </div>
+</section>-->
+<section>
+  <div class="page-header">
+    <h1>Products</h1>
+  </div>
+  <div class="list-group">
+    <div class="form-group">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Product Name</th>
+            <th>Category</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="product in vm.products " ui-sref="products.view({ productId: product._id })">
+            <td>{{$index+1}}</td>
+            <td>
+              <p class="list-group-item-heading" ng-bind="product.name"></p>
+            </td>
+            <td>
+              <p class="list-group-item-heading" ng-bind="product.category"></p>
+            </td>
+            <td>
+              <p class="list-group-item-heading" ng-bind="product.saleprice"></p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="alert alert-warning text-center" ng-if="vm.products.$resolved && !vm.products.length">
+    No Product yet, why don't you <a ui-sref="products.create">create one</a>?
+  </div>
+</section>

@@ -1,0 +1,47 @@
+<section style="min-height:1000px;">
+  <div class="page-header">
+    <h1>Receipts</h1>
+  </div>
+  <div class="list-group">
+
+    <!--<small class="list-group-item-text">
+        Posted on
+        <span ng-bind="receipt.created | date:'mediumDate'"></span>
+        by
+        <span ng-if="receipt.user" ng-bind="receipt.user.displayName"></span>
+        <span ng-if="!receipt.user">Deleted User</span>
+      </small>-->
+
+
+    <div class="form-group">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Customer name</th>
+            <th>Doc No.</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="receipt in vm.receipts " ui-sref="receipts.view({ receiptId: receipt._id })">
+            <td>{{$index+1}}</td>
+            <td>
+              <p class="list-group-item-heading" ng-bind="receipt.client.name"></p>
+            </td>
+            <td>
+              <p class="list-group-item-heading" ng-bind="receipt.docno"></p>
+            </td>
+            <td>
+              <p class="list-group-item-heading" ng-bind="receipt.amount"></p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+  </div>
+  <div class="alert alert-warning text-center" ng-if="vm.receipts.$resolved && !vm.receipts.length">
+    No Receipts yet, why don't you <a ui-sref="receipts.create">create one</a>?
+  </div>
+</section>

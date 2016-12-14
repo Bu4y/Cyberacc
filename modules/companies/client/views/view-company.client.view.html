@@ -1,0 +1,49 @@
+<section style="min-height:1000px;">
+  <div class="page-header">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="wrapper wrapper-content animated fadeInRight">
+          <div class="ibox-content p-xl">
+            <div class="row">
+              <div class="col-md-12">
+                <h2>รายละเอียดบริษัท</h2>
+                <ul class="list-group">
+                  <li class="list-group-item">ชื่อบริษัท : {{vm.company.name}}</li>
+                  <li class="list-group-item">ที่อยู่ : {{vm.company.address}}</li>
+                  <li class="list-group-item">TAX ID : {{vm.company.taxid}}</li>
+                  <li class="list-group-item">Tel : {{vm.company.telofficeno}}</li>
+                  <li class="list-group-item">Mobile : {{vm.company.mobileno}}</li>
+                  <li class="list-group-item">Fax : {{vm.company.faxno}}</li>
+                  <li class="list-group-item">Email : {{vm.company.email}}</li>
+                  <li class="list-group-item">ติดต่อ : {{vm.company.contact}}</li>
+                  <li class="list-group-item">Website : {{vm.company.website}}</li>
+                  <li class="list-group-item">Credit : {{vm.company.creditday}}</li>
+                  <li class="list-group-item">สาขา : {{vm.company.brunch}}</li>
+                  <li class="list-group-item">หมายเหตุ : {{vm.company.note}}</li>
+                </ul>
+              </div>
+            </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pull-right" ng-show="vm.company.isCurrentUserOwner">
+    <a class="btn btn-primary" ui-sref="companies.edit({ companyId: vm.company._id })">
+      <i class="glyphicon glyphicon-edit"></i>
+    </a>
+    <a class="btn btn-primary" ng-click="vm.remove()">
+      <i class="glyphicon glyphicon-trash"></i>
+    </a>
+  </div>
+  <small>
+    <em class="text-muted">
+      Posted on
+      <span ng-bind="vm.company.created | date:'mediumDate'"></span>
+      by
+      <span ng-if="vm.company.user"
+            ng-bind="vm.company.user.displayName"></span>
+      <span ng-if="!vm.company.user">Deleted User</span>
+    </em>
+  </small>
+</section>
