@@ -5,11 +5,11 @@
     .module('receivings')
     .controller('ReceivingsListController', ReceivingsListController);
 
-  ReceivingsListController.$inject = ['ReceivingsService'];
+  ReceivingsListController.$inject = ['ReceivingsService', 'Authentication'];
 
-  function ReceivingsListController(ReceivingsService) {
+  function ReceivingsListController(ReceivingsService, Authentication) {
     var vm = this;
-
+    vm.authentication = Authentication;
     vm.receivings = ReceivingsService.query();
   }
-}());
+} ());

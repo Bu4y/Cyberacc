@@ -5,11 +5,11 @@
     .module('receipts')
     .controller('ReceiptsListController', ReceiptsListController);
 
-  ReceiptsListController.$inject = ['ReceiptsService'];
+  ReceiptsListController.$inject = ['ReceiptsService', 'Authentication'];
 
-  function ReceiptsListController(ReceiptsService) {
+  function ReceiptsListController(ReceiptsService, Authentication) {
     var vm = this;
-
+    vm.authentication = Authentication;
     vm.receipts = ReceiptsService.query();
   }
-}());
+} ());
