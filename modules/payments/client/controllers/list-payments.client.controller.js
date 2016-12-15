@@ -5,11 +5,11 @@
     .module('payments')
     .controller('PaymentsListController', PaymentsListController);
 
-  PaymentsListController.$inject = ['PaymentsService'];
+  PaymentsListController.$inject = ['PaymentsService', 'Authentication'];
 
-  function PaymentsListController(PaymentsService) {
+  function PaymentsListController(PaymentsService, Authentication) {
     var vm = this;
-
+    vm.authentication = Authentication;
     vm.payments = PaymentsService.query();
   }
 }());

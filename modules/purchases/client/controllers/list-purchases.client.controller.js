@@ -5,11 +5,11 @@
     .module('purchases')
     .controller('PurchasesListController', PurchasesListController);
 
-  PurchasesListController.$inject = ['PurchasesService'];
+  PurchasesListController.$inject = ['PurchasesService', 'Authentication'];
 
-  function PurchasesListController(PurchasesService) {
+  function PurchasesListController(PurchasesService, Authentication) {
     var vm = this;
-
+    vm.authentication = Authentication;
     vm.purchases = PurchasesService.query();
   }
 }());

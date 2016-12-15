@@ -2,6 +2,11 @@
   <div class="page-header">
     <h1>Purchases</h1>
   </div>
+  <div class="pull-right" ng-hide="!vm.authentication.user">
+    <a class="btn btn-primary" ui-sref="purchases.create">
+      <span>Create</span>
+    </a>
+  </div>
   <div class="list-group" ng-show="vm.purchases.length > 0">
     <table class="table">
       <thead>
