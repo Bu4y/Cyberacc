@@ -10,7 +10,7 @@
                 <span class="block m-t-xs">
                     <strong class="font-bold">User</strong>
              </span>
-                <span class="text-muted text-xs block">Example</span>
+            <span class="text-muted text-xs block">Example</span>
             </span>
           </a>
         </div>
@@ -18,7 +18,7 @@
           IN+
         </div>
       </li>
-      <li ng-class="{active: $uiRoute}" ui-route="/" >
+      <!--<li ng-class="{active: $uiRoute}" ui-route="/" >
         <a href="/#!/"><i class="fa fa-laptop"></i> <span class="nav-label">Index</span></a>
       </li>
       <li ng-repeat="item in menu.items | orderBy: 'position'" ng-if="item.shouldRender(authentication.user);" ng-switch="item.type" ng-class="{ active: $state.includes(item.state), dropdown: item.type === 'dropdown' }" class="{{item.class}}" dropdown="item.type === 'dropdown'">
@@ -29,6 +29,13 @@
           </li>
         </ul>
         <a ng-switch-default ui-sref="{{item.state}}" ng-bind="item.title"></a>
+      </li>-->
+      <li ng-class="{active: $uiRoute}" ui-route="/" class="dropdown">
+        <a href="/#/"><i class="fa fa-home"></i> <span class="nav-label">Index</span></a>
+      </li>
+      <li ng-repeat="item in menu.items | orderBy: 'position'" ng-class="{ active: $state.includes(item.state)}" class="{{item.class}}"
+        ng-if="item.shouldRender(authentication.user);">
+        <a href="/#/{{item.state}}"><i class="{{item.title === 'Purchases' ? 'fa fa-file-powerpoint-o' : item.title === 'Products' ? 'fa fa-dropbox': item.title === 'Companies' ? 'fa fa-building-o': item.title === 'Gls' ? 'fa fa-line-chart': item.title === 'Invoices' ? 'fa fa-file': item.title === 'Receipts' ? 'fa fa-file-text': item.title === 'Receivings' ? 'fa fa-newspaper-o':item.title === 'Payments' ? 'fa fa-btc': item.title === 'Quotations' ? 'fa fa-stack-overflow': 'fa fa-laptop'}}"></i> <span class="nav-label">{{::item.title}}&nbsp;</span></a>
       </li>
     </ul>
   </div>

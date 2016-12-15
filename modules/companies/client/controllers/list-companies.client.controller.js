@@ -5,11 +5,11 @@
     .module('companies')
     .controller('CompaniesListController', CompaniesListController);
 
-  CompaniesListController.$inject = ['CompaniesService'];
+  CompaniesListController.$inject = ['CompaniesService', 'Authentication'];
 
-  function CompaniesListController(CompaniesService) {
+  function CompaniesListController(CompaniesService, Authentication) {
     var vm = this;
-
+    vm.authentication = Authentication;
     vm.companies = CompaniesService.query();
   }
-}());
+} ());
