@@ -1,12 +1,14 @@
 <section>
   <div class="page-header">
-    <h1>Receipts</h1>
+    <h1>Receipts
+      <div class="pull-right" ng-hide="!vm.authentication.user">
+        <a class="btn btn-primary" ui-sref="receipts.create">
+          <span>Create</span>
+        </a>
+      </div>
+    </h1>
   </div>
-  <div class="pull-right" ng-hide="!vm.authentication.user">
-    <a class="btn btn-primary" ui-sref="receipts.create">
-      <span>Create</span>
-    </a>
-  </div>
+
   <div class="list-group" ng-show="vm.receipts.length > 0">
     <table class="table">
       <thead>
